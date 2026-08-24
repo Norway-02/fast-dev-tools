@@ -2,7 +2,7 @@
 
 import React, { useId } from 'react';
 import { ClearButton } from './ClearButton';
-import { FileText, Sparkles } from 'lucide-react';
+import { FileText, Sparkles, AlertCircle } from 'lucide-react';
 
 export interface CodeEditorProps {
   label: string;
@@ -11,7 +11,9 @@ export interface CodeEditorProps {
   placeholder?: string;
   onClear?: () => void;
   onSample?: () => void;
+  onInvalidSample?: () => void;
   onSubmit?: () => void;
+  submitLabel?: string;
   errorLine?: number | null;
   readOnly?: boolean;
   minHeight?: string;
@@ -25,7 +27,9 @@ export function CodeEditor({
   placeholder = 'Enter input text here...',
   onClear,
   onSample,
+  onInvalidSample,
   onSubmit,
+  submitLabel = 'Process',
   errorLine,
   readOnly = false,
   minHeight = 'h-72',
@@ -41,10 +45,6 @@ export function CodeEditor({
       e.preventDefault();
       onSubmit();
     }
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k' && onClear) {
-      e.preventDefault();
-      onClear();
-    }
   };
 
   return (
@@ -56,18 +56,40 @@ export function CodeEditor({
           <span>{label}</span>
         </label>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {onSample && (
             <button
               onClick={onSample}
               className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-mono font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 rounded-lg transition-colors"
             >
               <Sparkles className="w-3 h-3 text-amber-400" />
-              <span>Sample</span>
+              <span>Load Example</span>
+            </button>
+          )}
+
+          {onInvalidSample && (
+            <button
+              onClick={onInvalidSample}
+              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-mono font-medium bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-900/50 rounded-lg transition-colors"
+            >
+              <AlertCircle className="w-3 h-3 text-rose-400" />
+              <span>Try Invalid Input</span>
             </button>
           )}
 
           {onClear && <ClearButton onClear={onClear} />}
+
+          {onSubmit && (
+            <button
+              onClick={onSubmit}
+              className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-mono font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors shadow-md shadow-indigo-600/20"
+            >
+              <span>{submitLabel}</span>
+              <kbd className="hidden sm:inline-block px-1 py-0.2 text-[10px] bg-indigo-700 rounded text-indigo-200 font-normal">
+                ⌘↵
+              </kbd>
+            </button>
+          )}
 
           {actions}
         </div>
@@ -99,7 +121,7 @@ export function CodeEditor({
           <span>{byteSize > 1024 ? `${(byteSize / 1024).toFixed(1)} KB` : `${byteSize} B`}</span>
         </div>
         <div className="hidden sm:block text-[10px] text-slate-600">
-          <span>Ctrl/Cmd+Enter run • Ctrl/Cmd+K clear</span>
+          <span>Ctrl/Cmd+Enter run</span>
         </div>
       </div>
     </div>

@@ -57,6 +57,9 @@ export default function JsonFormatterPage() {
             onChange={setInput}
             onClear={() => setInput('')}
             onSample={() => setInput(tool.sampleInput)}
+            onInvalidSample={() => setInput(tool.invalidSampleInput || '')}
+            onSubmit={() => {}}
+            submitLabel="Format JSON"
             errorLine={validation.line}
           />
 

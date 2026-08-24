@@ -1,31 +1,31 @@
 import React from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
-export function ValidationError({
-  error,
-  line,
-  column,
-}: {
+export interface ValidationErrorProps {
   error: string | null;
   line?: number | null;
   column?: number | null;
-}) {
-  if (!error) return null;
+}
 
+export function ValidationError({ error, line, column }: ValidationErrorProps) {
   return (
-    <div className="flex items-start gap-3 p-4 bg-rose-950/40 border border-rose-900/60 rounded-xl text-rose-300 text-xs font-mono">
-      <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-      <div className="space-y-1">
-        <div className="font-semibold text-rose-200 flex flex-wrap items-center gap-2">
-          <span>Parsing Error</span>
-          {(line !== undefined && line !== null) && (
-            <span className="text-[10px] bg-rose-900/60 px-2 py-0.5 rounded text-rose-200 border border-rose-800 font-medium">
-              Approximate Error Location: Line {line}{column ? `, Col ${column}` : ''}
-            </span>
-          )}
+    <div className="p-3 bg-rose-950/30 border-l-4 border-l-rose-500 border border-rose-900/40 rounded-r-xl space-y-1 font-mono text-xs text-rose-200">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 text-rose-400 font-bold">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>Invalid JSON Syntax</span>
         </div>
-        <p className="text-rose-300/90 leading-relaxed break-all">{error}</p>
+
+        {(line !== null && line !== undefined) && (
+          <span className="px-2 py-0.5 rounded bg-rose-900/50 text-rose-200 text-[11px] border border-rose-800/60 font-semibold">
+            Approximate Error Location: Line {line}, Col {column || 1}
+          </span>
+        )}
       </div>
+
+      <p className="text-slate-300 text-xs leading-relaxed pl-6">
+        {error}
+      </p>
     </div>
   );
 }

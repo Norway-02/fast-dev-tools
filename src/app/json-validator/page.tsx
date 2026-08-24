@@ -3,73 +3,88 @@
 import React, { useState } from 'react';
 import { ToolLayout } from '@/components/tools/ToolLayout';
 import { CodeEditor } from '@/components/tools/CodeEditor';
+import { OutputViewer } from '@/components/tools/OutputViewer';
 import { ValidationError } from '@/components/tools/ValidationError';
 import { getToolBySlug } from '@/lib/constants/tools-list';
 import { validateJson } from '@/lib/tools/json';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle, AlertTriangle } from 'lucide-react';
 
 export default function JsonValidatorPage() {
   const tool = getToolBySlug('json-validator')!;
   const [input, setInput] = useState(tool.sampleInput);
 
-  const res = validateJson(input);
+  const validation = validateJson(input);
 
   return (
     <ToolLayout
       tool={tool}
       howItWorks={[
-        'Paste your JSON payload into the validation input editor.',
-        'The validator parses the input using strict ECMA-404 rules.',
-        'View instant validation status, parse metrics, or line/column syntax error locations.',
+        'Paste your JSON string into the input editor.',
+        'The validator parses the input and runs structural syntax verification.',
+        'If invalid, precise line and column error indicators pinpoint the exact syntax error.',
       ]}
       useCases={[
-        'Validating API requests before sending them in production.',
-        'Locating missing quotes, trailing commas, or bracket mismatch errors in config files.',
-        'Inspecting structural depth and key counts of unknown payloads.',
+        'Debugging broken API request bodies or response payloads.',
+        'Finding unescaped quotes or trailing commas in configuration files.',
+        'Verifying JSON structure before parsing in backend applications.',
       ]}
     >
       <div className="space-y-4">
-        {/* Status Indicator Card */}
-        {input.trim() && (
-          <div
-            className={`p-4 rounded-xl border flex items-center gap-3 font-mono text-xs ${
-              res.isValid
-                ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-300'
-                : 'bg-rose-950/30 border-rose-500/40 text-rose-300'
-            }`}
-          >
-            {res.isValid ? (
-              <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />
+        {/* Status Indicator Banner */}
+        <div
+          className={`p-3.5 border rounded-xl flex items-center justify-between text-xs font-mono font-medium ${
+            validation.isValid
+              ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300'
+              : 'bg-rose-950/40 border-rose-800/80 text-rose-300'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            {validation.isValid ? (
+              <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
             ) : (
-              <XCircle className="w-5 h-5 text-rose-400 shrink-0" />
+              <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
             )}
-            <div className="flex-1 flex flex-wrap items-center justify-between gap-2">
-              <span className="font-bold text-sm">
-                {res.isValid ? 'Valid JSON Syntax' : 'Invalid JSON Syntax'}
-              </span>
-              {res.isValid && res.stats && (
-                <div className="flex items-center gap-4 text-emerald-400/90 text-[11px]">
-                  <span>Keys: {res.stats.keysCount}</span>
-                  <span>Max Depth: {res.stats.depth}</span>
-                  <span>Size: {res.stats.sizeBytes} B</span>
-                </div>
-              )}
-            </div>
+            <span>
+              {validation.isValid
+                ? 'Valid JSON Syntax — No structural errors detected.'
+                : 'Invalid JSON Syntax — Syntax errors detected below.'}
+            </span>
           </div>
-        )}
 
-        <CodeEditor
-          label="JSON Input String"
-          value={input}
-          onChange={setInput}
-          onClear={() => setInput('')}
-          onSample={() => setInput(tool.sampleInput)}
-          errorLine={res.line}
-          minHeight="h-80"
-        />
+          {validation.isValid && validation.stats && (
+            <div className="hidden sm:flex items-center gap-3 text-slate-400 text-[11px]">
+              <span>Keys: {validation.stats.keysCount}</span>
+              <span>•</span>
+              <span>Max Depth: {validation.stats.depth}</span>
+            </div>
+          )}
+        </div>
 
-        {!res.isValid && res.error && (
-          <ValidationError error={res.error} line={res.line} column={res.column} />
+        {/* Editors Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <CodeEditor
+            label="JSON Input to Validate"
+            value={input}
+            onChange={setInput}
+            onClear={() => setInput('')}
+            onSample={() => setInput(tool.sampleInput)}
+            onInvalidSample={() => setInput(tool.invalidSampleInput || '')}
+            onSubmit={() => {}}
+            submitLabel="Validate JSON"
+            errorLine={validation.line}
+          />
+
+          <OutputViewer
+            label="Validation Summary & Clean Payload"
+            value={validation.isValid ? JSON.stringify(JSON.parse(input), null, 2) : 'Invalid JSON input. Fix errors to see formatted output.'}
+            filename="validated.json"
+            mimeType="application/json"
+          />
+        </div>
+
+        {/* Inline Error Details */}
+        {!validation.isValid && validation.error && (
+          <ValidationError error={validation.error} line={validation.line} column={validation.column} />
         )}
       </div>
     </ToolLayout>

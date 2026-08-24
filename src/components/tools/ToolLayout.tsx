@@ -18,7 +18,6 @@ export interface ToolLayoutProps {
 }
 
 export function ToolLayout({ tool, children, howItWorks, useCases }: ToolLayoutProps) {
-  // SoftwareApplication JSON-LD structured data
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
@@ -42,23 +41,17 @@ export function ToolLayout({ tool, children, howItWorks, useCases }: ToolLayoutP
 
       <Header />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
-        {/* Breadcrumb Navigation */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         <Breadcrumbs items={[{ label: tool.category }, { label: tool.title }]} />
 
-        {/* Tool Header Info */}
         <ToolHeader tool={tool} />
 
-        {/* Privacy Notice Banner */}
         <PrivacyNotice />
 
-        {/* Core Tool Interface Container */}
-        <div className="my-6">{children}</div>
+        <div className="my-4">{children}</div>
 
-        {/* Ad Slot Below Tool */}
         <AdSlot placement="below-tool" />
 
-        {/* How It Works & Use Cases */}
         {(howItWorks || useCases) && (
           <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-800/80">
             {howItWorks && (
@@ -97,11 +90,9 @@ export function ToolLayout({ tool, children, howItWorks, useCases }: ToolLayoutP
           </section>
         )}
 
-        {/* FAQ Section */}
         <FAQ faqs={tool.faqs} />
 
-        {/* Related Tools Internal Links */}
-        <RelatedTools currentSlug={tool.slug} relatedSlugs={tool.relatedSlugs} />
+        <RelatedTools currentSlug={tool.slug} relatedSlugs={tool.relatedSlugs} nextToolSlugs={tool.nextToolSlugs} />
       </main>
 
       <Footer />

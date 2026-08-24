@@ -2,200 +2,126 @@
 
 import React, { useState } from 'react';
 import { ToolLayout } from '@/components/tools/ToolLayout';
-import { CopyButton } from '@/components/tools/CopyButton';
-import { ValidationError } from '@/components/tools/ValidationError';
+import { OutputViewer } from '@/components/tools/OutputViewer';
 import { getToolBySlug } from '@/lib/constants/tools-list';
-import { parseCronExpression, COMMON_CRON_PRESETS, buildCronExpression, CronState } from '@/lib/tools/cron';
-import { Calendar, Clock, Globe } from 'lucide-react';
+import { parseCronExpression } from '@/lib/tools/cron';
+import { CalendarClock, Info, Sparkles } from 'lucide-react';
 
 export default function CronGeneratorPage() {
   const tool = getToolBySlug('cron-generator')!;
-
-  const [cronState, setCronState] = useState<CronState>({
-    minute: '0',
-    hour: '9',
-    dayOfMonth: '*',
-    month: '*',
-    dayOfWeek: '1',
+  const [expression, setExpression] = useState(tool.sampleInput);
+  const [userTimezone] = useState(() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    } catch {
+      return 'UTC';
+    }
   });
 
-  const [rawExpr, setRawExpr] = useState<string>('0 9 * * 1');
-  const [activeTab, setActiveTab] = useState<'presets' | 'builder' | 'manual'>('presets');
+  const parsed = parseCronExpression(expression);
 
-  const exprToParse = activeTab === 'builder' ? buildCronExpression(cronState) : rawExpr;
-  const res = parseCronExpression(exprToParse);
+  const presets = [
+    { label: 'Every Minute', expr: '* * * * *' },
+    { label: 'Every 5 Minutes', expr: '*/5 * * * *' },
+    { label: 'Every Hour', expr: '0 * * * *' },
+    { label: 'Every Day at Midnight', expr: '0 0 * * *' },
+    { label: 'Every Monday at 9 AM', expr: '0 9 * * 1' },
+    { label: '1st of Month at Midnight', expr: '0 0 1 * *' },
+  ];
 
   return (
     <ToolLayout
       tool={tool}
       howItWorks={[
-        'Choose a common preset or construct custom fields (minute, hour, day, month, weekday).',
-        'View the generated 5-field cron expression and instant plain English explanation.',
-        'Copy the expression for your crontab, GitHub Actions, or cloud scheduler.',
+        'Enter or select a 5-field Unix cron expression.',
+        'The parser converts the expression into a plain English schedule description.',
+        'Copy the verified expression for Linux crontab, AWS EventBridge, or GitHub Actions.',
       ]}
       useCases={[
-        'Creating crontab schedules for automated Linux backups.',
-        'Configuring scheduled jobs in Cloud Composer, Vercel Cron, or AWS EventBridge.',
+        'Building crontab schedules for recurring background jobs.',
+        'Configuring automated GitHub Actions workflow triggers.',
+        'Explaining complex legacy cron schedules in plain text.',
       ]}
     >
-      <div className="space-y-6">
-        {/* Dialect & Timezone Notice */}
-        <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-2 font-mono text-xs text-slate-400">
-          <span className="flex items-center gap-1.5 text-indigo-400">
-            <Clock className="w-4 h-4" />
-            <span>{res.dialectNotice}</span>
-          </span>
-          <span className="flex items-center gap-1.5 text-slate-400">
-            <Globe className="w-4 h-4 text-emerald-400" />
-            <span>{res.timezoneNotice}</span>
+      <div className="space-y-4">
+        {/* Timezone Notice Banner */}
+        <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl flex items-center justify-between gap-2 text-xs font-mono text-slate-300">
+          <div className="flex items-center gap-2">
+            <Info className="w-4 h-4 text-indigo-400 shrink-0" />
+            <span>
+              <strong className="text-slate-200">Cron syntax does not define a universal timezone.</strong> Your scheduler determines which timezone is used.
+            </span>
+          </div>
+          <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-slate-950 text-indigo-300 border border-slate-800 text-[11px]">
+            Browser Timezone: {userTimezone}
           </span>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex border-b border-slate-800 font-mono text-xs">
-          <button
-            onClick={() => setActiveTab('presets')}
-            className={`px-4 py-2.5 font-bold border-b-2 transition-all ${
-              activeTab === 'presets'
-                ? 'border-indigo-500 text-indigo-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Common Presets
-          </button>
-          <button
-            onClick={() => setActiveTab('builder')}
-            className={`px-4 py-2.5 font-bold border-b-2 transition-all ${
-              activeTab === 'builder'
-                ? 'border-indigo-500 text-indigo-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Visual Field Builder
-          </button>
-          <button
-            onClick={() => setActiveTab('manual')}
-            className={`px-4 py-2.5 font-bold border-b-2 transition-all ${
-              activeTab === 'manual'
-                ? 'border-indigo-500 text-indigo-400'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            Manual Expression
-          </button>
-        </div>
-
-        {/* Tab 1: Presets */}
-        {activeTab === 'presets' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-            {COMMON_CRON_PRESETS.map((preset, idx) => (
+        {/* Quick Presets Bar */}
+        <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-2">
+          <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-200">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span>Common Schedule Presets</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {presets.map((preset) => (
               <button
-                key={idx}
-                onClick={() => setRawExpr(preset.expression)}
-                className={`p-3 bg-slate-900 border rounded-xl text-left space-y-1 transition-all ${
-                  rawExpr === preset.expression
-                    ? 'border-indigo-500 bg-indigo-950/20'
-                    : 'border-slate-800 hover:border-slate-700'
+                key={preset.expr}
+                onClick={() => setExpression(preset.expr)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-mono border transition-colors ${
+                  expression === preset.expr
+                    ? 'bg-indigo-600 border-indigo-500 text-white font-bold'
+                    : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300'
                 }`}
               >
-                <div className="font-mono font-bold text-indigo-300 text-xs">{preset.expression}</div>
-                <div className="text-[11px] text-slate-400">{preset.label}</div>
+                {preset.label}
               </button>
             ))}
           </div>
-        )}
+        </div>
 
-        {/* Tab 2: Visual Builder */}
-        {activeTab === 'builder' && (
-          <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl grid grid-cols-1 sm:grid-cols-5 gap-3 font-mono text-xs">
-            <div>
-              <label className="block text-slate-400 mb-1">Minute (0-59)</label>
-              <input
-                type="text"
-                value={cronState.minute}
-                onChange={(e) => setCronState({ ...cronState, minute: e.target.value })}
-                className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded text-slate-100"
-              />
+        {/* Cron Expression Input & Explanation */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="flex flex-col bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-mono font-semibold text-slate-200 flex items-center gap-2">
+                <CalendarClock className="w-4 h-4 text-indigo-400" />
+                <span>Cron Expression (5 Fields)</span>
+              </label>
+              <button
+                onClick={() => setExpression('')}
+                className="text-[11px] font-mono text-slate-400 hover:text-slate-200"
+              >
+                Clear
+              </button>
             </div>
-            <div>
-              <label className="block text-slate-400 mb-1">Hour (0-23)</label>
-              <input
-                type="text"
-                value={cronState.hour}
-                onChange={(e) => setCronState({ ...cronState, hour: e.target.value })}
-                className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded text-slate-100"
-              />
-            </div>
-            <div>
-              <label className="block text-slate-400 mb-1">Day of Month (1-31)</label>
-              <input
-                type="text"
-                value={cronState.dayOfMonth}
-                onChange={(e) => setCronState({ ...cronState, dayOfMonth: e.target.value })}
-                className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded text-slate-100"
-              />
-            </div>
-            <div>
-              <label className="block text-slate-400 mb-1">Month (1-12)</label>
-              <input
-                type="text"
-                value={cronState.month}
-                onChange={(e) => setCronState({ ...cronState, month: e.target.value })}
-                className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded text-slate-100"
-              />
-            </div>
-            <div>
-              <label className="block text-slate-400 mb-1">Day of Week (0-6)</label>
-              <input
-                type="text"
-                value={cronState.dayOfWeek}
-                onChange={(e) => setCronState({ ...cronState, dayOfWeek: e.target.value })}
-                className="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded text-slate-100"
-              />
-            </div>
-          </div>
-        )}
 
-        {/* Tab 3: Manual Input */}
-        {activeTab === 'manual' && (
-          <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-2 font-mono text-xs">
-            <label className="block font-bold text-slate-200">Cron Expression (5 Fields):</label>
             <input
               type="text"
-              value={rawExpr}
-              onChange={(e) => setRawExpr(e.target.value)}
+              value={expression}
+              onChange={(e) => setExpression(e.target.value)}
               placeholder="e.g. 0 9 * * 1"
-              className="w-full px-4 py-2 bg-slate-950 border border-slate-800 rounded-lg text-indigo-300 text-sm font-bold"
+              className="w-full p-3 bg-slate-950 text-indigo-300 font-mono text-base tracking-wider rounded-lg border border-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
-          </div>
-        )}
 
-        {/* Generated Result Card */}
-        {res.isValid ? (
-          <div className="p-6 bg-slate-900 border border-slate-800 rounded-xl space-y-4 font-mono text-xs">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="space-y-1">
-                <span className="text-slate-400 font-semibold">Generated Cron Expression:</span>
-                <div className="text-2xl font-extrabold text-emerald-400 tracking-wider">
-                  {res.expression}
-                </div>
-              </div>
-              <CopyButton text={res.expression} className="px-4 py-2 text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white" />
-            </div>
-
-            <div className="p-4 bg-slate-950 border border-slate-800 rounded-lg space-y-1">
-              <div className="text-indigo-400 font-semibold text-xs flex items-center gap-1.5">
-                <Calendar className="w-4 h-4" />
-                <span>Plain English Description</span>
-              </div>
-              <div className="text-slate-100 text-sm font-medium leading-relaxed">
-                “{res.humanDescription}”
+            <div className="p-3 bg-slate-950 border border-slate-800/80 rounded-lg space-y-1 font-mono text-xs">
+              <div className="text-slate-400 font-semibold">5-Field Syntax Breakdown:</div>
+              <div className="grid grid-cols-5 text-center text-[11px] text-slate-400 pt-1">
+                <div>Minute<br /><span className="text-indigo-400 font-bold">0-59</span></div>
+                <div>Hour<br /><span className="text-indigo-400 font-bold">0-23</span></div>
+                <div>Day (M)<br /><span className="text-indigo-400 font-bold">1-31</span></div>
+                <div>Month<br /><span className="text-indigo-400 font-bold">1-12</span></div>
+                <div>Day (W)<br /><span className="text-indigo-400 font-bold">0-6</span></div>
               </div>
             </div>
           </div>
-        ) : (
-          <ValidationError error={res.error} />
-        )}
+
+          <OutputViewer
+            label="Plain English Schedule Description"
+            value={parsed.humanDescription || parsed.error || ''}
+            filename="cron-schedule.txt"
+          />
+        </div>
       </div>
     </ToolLayout>
   );

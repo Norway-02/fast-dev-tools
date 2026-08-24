@@ -1,16 +1,16 @@
 import React from 'react';
-import { ShieldCheck, Lock } from 'lucide-react';
 
 export function PrivacyNotice() {
   return (
-    <div className="flex items-center justify-between gap-2 p-2.5 bg-slate-900/60 border border-slate-800/80 rounded-lg text-xs font-mono text-slate-400">
-      <span className="flex items-center gap-2 text-slate-300">
-        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-        <span>Your data stays in this browser. Processing occurs locally via Web APIs.</span>
-      </span>
-      <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-slate-500 bg-slate-950 px-2 py-0.5 rounded border border-slate-800 shrink-0">
-        <Lock className="w-3 h-3 text-slate-400" />
-        <span>Zero Server Transmission</span>
+    <div className="flex items-center justify-between gap-3 px-4 py-2 bg-[#0C111B]/90 border border-[#1E293B] rounded-xl text-xs font-mono text-slate-300 shadow-sm">
+      <div className="flex items-center gap-2.5">
+        <span className="w-2 h-2 rounded-full bg-[#34D399] shadow-[0_0_8px_rgba(52,211,153,0.6)] animate-pulse-dot shrink-0" />
+        <span>
+          <strong className="text-slate-100 font-semibold">Processed locally.</strong> Your input stays in this browser.
+        </span>
+      </div>
+      <span className="hidden sm:inline-block text-[10px] text-slate-500 font-mono">
+        Zero Data Sent
       </span>
     </div>
   );

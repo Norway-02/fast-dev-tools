@@ -63,26 +63,32 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-150">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-[#06080D]/80 backdrop-blur-md transition-opacity duration-180 ease-out"
+      onClick={onClose}
+    >
       <div
-        className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden font-sans"
+        className="relative w-full max-w-2xl bg-[#0C111B] border border-[#1E293B] rounded-2xl shadow-2xl overflow-hidden font-sans transform scale-95 animate-in fade-in zoom-in-95 duration-180 ease-out"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Command Palette Input Header */}
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-800 bg-slate-950/90">
-          <Search className="w-5 h-5 text-indigo-400 shrink-0" />
+        <div className="flex items-center gap-3 px-4 py-3.5 border-b border-[#1E293B] bg-[#06080D]">
+          <Search className="w-5 h-5 text-[#34D399] shrink-0" />
           <input
             ref={inputRef}
             type="text"
-            placeholder="Search all 21 tools (e.g. JSON, JWT, Base64, UUID)..."
+            placeholder="Search developer tools (JSON, JWT, Base64, Regex, UUID)..."
             value={query}
             onChange={(e) => handleQueryChange(e.target.value)}
             onKeyDown={handleKeyDown}
             className="flex-1 bg-transparent text-slate-100 placeholder-slate-500 font-mono text-sm focus:outline-none"
           />
+          <kbd className="px-2 py-0.5 rounded bg-[#111927] border border-[#1E293B] text-[10px] font-mono text-slate-400">
+            ESC
+          </kbd>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
+            className="p-1 rounded-lg hover:bg-[#111927] text-slate-400 hover:text-slate-200 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -90,8 +96,8 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
         {/* Results List */}
         <div className="max-h-96 overflow-y-auto p-2 space-y-1">
-          <div className="px-3 py-1 text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
-            {query.trim() ? `Search Results (${filteredTools.length})` : 'Popular Developer Tools'}
+          <div className="px-3 py-1 text-[10px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
+            {query.trim() ? `Search Results (${filteredTools.length})` : 'Popular Tools'}
           </div>
 
           {filteredTools.length > 0 ? (
@@ -101,19 +107,24 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
                 onClick={() => navigateToTool(tool)}
                 onMouseEnter={() => setSelectedIndex(idx)}
                 className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors ${
-                  idx === selectedIndex ? 'bg-indigo-600/20 border border-indigo-500/40 text-slate-100' : 'hover:bg-slate-800/60 text-slate-300'
+                  idx === selectedIndex
+                    ? 'bg-[#111927] border border-[#34D399]/40 text-slate-100'
+                    : 'hover:bg-[#111927]/60 text-slate-300 border border-transparent'
                 }`}
               >
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-sm text-slate-100">{tool.title}</span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#06080D] text-slate-400 border border-[#1E293B]">
                       {tool.category}
                     </span>
                   </div>
                   <p className="text-xs text-slate-400 line-clamp-1">{tool.shortDescription}</p>
                 </div>
-                <ArrowRight className={`w-4 h-4 shrink-0 transition-transform ${idx === selectedIndex ? 'text-indigo-400 translate-x-1' : 'text-slate-600'}`} />
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono text-slate-500">↵</span>
+                  <ArrowRight className={`w-4 h-4 shrink-0 transition-transform ${idx === selectedIndex ? 'text-[#34D399] translate-x-1' : 'text-slate-600'}`} />
+                </div>
               </div>
             ))
           ) : (
@@ -124,13 +135,14 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
         </div>
 
         {/* Footer Shortcut Legend */}
-        <div className="flex items-center justify-between px-4 py-2 bg-slate-950 border-t border-slate-800/80 text-[11px] font-mono text-slate-500">
+        <div className="flex items-center justify-between px-4 py-2.5 bg-[#06080D] border-t border-[#1E293B] text-[11px] font-mono text-slate-500">
           <div className="flex items-center gap-3">
-            <span><kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">↑</kbd> <kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">↓</kbd> Navigate</span>
-            <span><kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">↵</kbd> Select</span>
-            <span><kbd className="px-1.5 py-0.5 bg-slate-800 rounded text-slate-300">ESC</kbd> Close</span>
+            <span><kbd className="px-1.5 py-0.5 bg-[#111927] rounded text-slate-300">↑</kbd> <kbd className="px-1.5 py-0.5 bg-[#111927] rounded text-slate-300">↓</kbd> Navigate</span>
+            <span><kbd className="px-1.5 py-0.5 bg-[#111927] rounded text-slate-300">↵</kbd> Select</span>
+            <span><kbd className="px-1.5 py-0.5 bg-[#111927] rounded text-slate-300">ESC</kbd> Close</span>
           </div>
-          <div className="flex items-center gap-1 text-emerald-400 font-semibold">
+          <div className="flex items-center gap-1.5 text-[#34D399] font-semibold">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#34D399]" />
             <span>100% Client-Side</span>
           </div>
         </div>

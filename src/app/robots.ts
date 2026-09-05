@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 
 export const dynamic = 'force-static';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://fastdevtools.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://devpocket.dpdns.org';
 
 export default function robots(): MetadataRoute.Robots {
   return {

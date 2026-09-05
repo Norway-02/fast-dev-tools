@@ -3,13 +3,12 @@ import { TOOLS_LIST } from '@/lib/constants/tools-list';
 
 export const dynamic = 'force-static';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://fastdevtools.vercel.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://devpocket.dpdns.org';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
-      lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
     },
@@ -18,7 +17,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   TOOLS_LIST.forEach((tool) => {
     routes.push({
       url: `${SITE_URL}/${tool.slug}`,
-      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     });

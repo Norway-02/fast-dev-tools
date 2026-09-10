@@ -10,7 +10,7 @@ export function Footer() {
           <div className="space-y-1.5">
             <Link href="/" className="flex items-center gap-2 text-slate-100 font-mono font-bold text-sm">
               <span className="text-[#34D399] font-extrabold">&gt;_</span>
-              <span>FastDevTools</span>
+              <span>DevPocket</span>
             </Link>
             <p className="text-slate-400 text-xs max-w-md font-sans">
               Fast developer micro-tools. No installation. No signup.
@@ -29,10 +29,22 @@ export function Footer() {
         </div>
 
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono text-slate-500">
-          <p>© {new Date().getFullYear()} FastDevTools. Free & open developer utilities.</p>
+          <p>© {new Date().getFullYear()} DevPocket. Free & open developer utilities.</p>
           <div className="flex flex-wrap items-center gap-4">
-            <Link href="/" className="hover:text-slate-300 transition-colors">
-              All 21 Tools
+            <Link href="/dev-tools" className="hover:text-slate-300 transition-colors">
+              All Tools
+            </Link>
+            <Link href="/json-tools" className="hover:text-[#34D399] transition-colors">
+              JSON Tools
+            </Link>
+            <Link href="/encoding-tools" className="hover:text-[#38BDF8] transition-colors">
+              Encoding
+            </Link>
+            <Link href="/developer-utilities" className="hover:text-purple-400 transition-colors">
+              Utilities
+            </Link>
+            <Link href="/guides" className="hover:text-[#34D399] transition-colors">
+              Guides
             </Link>
             <span className="flex items-center gap-1.5 text-slate-400">
               <Lock className="w-3 h-3 text-[#38BDF8]" />

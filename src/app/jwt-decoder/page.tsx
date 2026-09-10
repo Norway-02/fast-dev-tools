@@ -7,11 +7,16 @@ import { JsonTreeView } from '@/components/tools/JsonTreeView';
 import { ValidationError } from '@/components/tools/ValidationError';
 import { getToolBySlug } from '@/lib/constants/tools-list';
 import { decodeJwt } from '@/lib/tools/jwt';
+import { recordRecentTool } from '@/components/tools/RecentTools';
 import { ShieldAlert, Clock } from 'lucide-react';
 
 export default function JwtDecoderPage() {
   const tool = getToolBySlug('jwt-decoder')!;
   const [input, setInput] = useState(tool.sampleInput);
+
+  React.useEffect(() => {
+    recordRecentTool('jwt-decoder');
+  }, []);
 
   const res = decodeJwt(input);
 

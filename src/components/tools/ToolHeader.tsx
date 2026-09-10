@@ -11,7 +11,7 @@ export function ToolHeader({ tool }: { tool: ToolMetadata }) {
       </div>
 
       <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-100 font-mono">
-        {tool.title}
+        {tool.h1Title || tool.title}
       </h1>
 
       <p className="text-sm text-slate-400 leading-relaxed max-w-3xl font-sans">

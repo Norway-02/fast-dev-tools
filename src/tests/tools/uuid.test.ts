@@ -15,6 +15,15 @@ describe('UUID Tools — Comprehensive Audit Test Suite (Item 3)', () => {
       expect(uuids[0]).toHaveLength(32);
       expect(validateUuid(uuids[0]).format).toBe('hyphenless');
     });
+
+    it('generates valid UUID v7 time-ordered identifiers', () => {
+      const uuids = generateUuids({ version: 'v7', count: 10 });
+      expect(uuids).toHaveLength(10);
+      const val = validateUuid(uuids[0]);
+      expect(val.isValidSyntax).toBe(true);
+      expect(val.isValidRfc4122).toBe(true);
+      expect(val.version).toContain('v7');
+    });
   });
 
   describe('UUID Validator Version & Variant Analysis', () => {

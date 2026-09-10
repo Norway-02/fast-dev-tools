@@ -2,11 +2,11 @@ import { Metadata } from 'next';
 import { ToolMetadata } from '@/lib/constants/tools-list';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://devpocket.dpdns.org';
-const SITE_NAME = 'FastDevTools';
+const SITE_NAME = 'DevPocket';
 
 export function constructToolMetadata(tool: ToolMetadata): Metadata {
   const url = `${SITE_URL}/${tool.slug}`;
-  const title = `${tool.title} — Fast Developer Tools (No Signup)`;
+  const title = `${tool.title} — DevPocket`;
   const description = tool.fullDescription;
 
   return {

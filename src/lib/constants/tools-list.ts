@@ -3,17 +3,34 @@ export interface ToolFaq {
   answer: string;
 }
 
+export interface ToolShortcut {
+  key: string;
+  description: string;
+}
+
+export interface ToolErrorExplanation {
+  error: string;
+  cause: string;
+  fix: string;
+}
+
 export interface ToolMetadata {
   id: string;
   slug: string;
   title: string;
+  h1Title?: string;
   shortDescription: string;
   fullDescription: string;
   category: 'JSON' | 'Encoding' | 'Identifiers & Time' | 'Security & Web' | 'Developer Utilities';
+  categorySlug?: 'json-tools' | 'encoding-tools' | 'developer-utilities';
   icon: string;
   keywords: string[];
   relatedSlugs: string[];
   nextToolSlugs?: string[];
+  guideSlugs?: string[];
+  features?: string[];
+  shortcuts?: ToolShortcut[];
+  errorExplanations?: ToolErrorExplanation[];
   faqs: ToolFaq[];
   sampleInput: string;
   invalidSampleInput?: string;
@@ -29,11 +46,37 @@ export const TOOLS_LIST: ToolMetadata[] = [
     shortDescription: 'Format and beautify unformatted or minified JSON with customizable indentation.',
     fullDescription: 'Fast, secure online JSON Formatter and beautifier. Indent JSON strings with custom spaces or tabs 100% in your browser.',
     category: 'JSON',
+    categorySlug: 'json-tools',
+    h1Title: 'JSON Formatter & Beautifier',
     icon: 'FileCode',
     isPopular: true,
     keywords: ['json formatter', 'json beautifier', 'format json', 'pretty print json', 'json indent'],
     relatedSlugs: ['json-validator', 'json-minifier', 'json-viewer', 'json-to-yaml', 'json-to-csv'],
     nextToolSlugs: ['json-validator', 'json-minifier', 'json-to-yaml'],
+    guideSlugs: ['how-to-format-json', 'json-vs-json5', 'how-to-validate-malformed-json'],
+    features: [
+      'Format and beautify unformatted or minified JSON',
+      'Validate JSON syntax and detect error locations',
+      'Copy formatted output or download .json file',
+      'Minify JSON to single line string',
+    ],
+    shortcuts: [
+      { key: 'Ctrl + Enter', description: 'Format JSON input' },
+      { key: 'Ctrl + Shift + C', description: 'Copy formatted result to clipboard' },
+      { key: 'Esc', description: 'Clear input editor' },
+    ],
+    errorExplanations: [
+      {
+        error: 'SyntaxError: Unexpected token \'',
+        cause: 'Single quotes were used instead of valid JSON double quotes.',
+        fix: 'Replace all single quotes (\') with standard double quotes (").',
+      },
+      {
+        error: 'SyntaxError: Unexpected token }',
+        cause: 'A trailing comma was left after the last array or object element.',
+        fix: 'Remove the comma after the last key-value pair.',
+      },
+    ],
     faqs: [
       {
         question: 'Is my JSON data sent to any server?',
@@ -451,8 +494,226 @@ export const TOOLS_LIST: ToolMetadata[] = [
     ],
     sampleInput: '#3b82f6',
   },
+  {
+    id: 'json-diff',
+    slug: 'json-diff',
+    title: 'JSON Diff',
+    h1Title: 'Semantic JSON Diff & Compare',
+    shortDescription: 'Compare two JSON objects semantically and pinpoint added, removed, and changed properties.',
+    fullDescription: 'Structural semantic JSON diff tool. Compare two parsed JSON payloads, inspect additions, deletions, value modifications, and array index changes with JSON paths.',
+    category: 'JSON',
+    categorySlug: 'json-tools',
+    icon: 'GitCompare',
+    isPopular: true,
+    keywords: ['json diff', 'compare json', 'json structural diff', 'diff json objects', 'json delta'],
+    relatedSlugs: ['json-formatter', 'json-validator', 'json-viewer'],
+    nextToolSlugs: ['json-formatter', 'json-validator'],
+    guideSlugs: ['how-to-format-json', 'json-vs-json5'],
+    faqs: [
+      {
+        question: 'Does this perform raw string comparison or structural JSON diffing?',
+        answer: 'It parses both inputs into JavaScript objects and performs a deep recursive structural comparison.',
+      },
+    ],
+    sampleInput: '{\n  "name": "John",\n  "age": 30,\n  "role": "admin"\n}',
+  },
+  {
+    id: 'json-escape',
+    slug: 'json-escape',
+    title: 'JSON Escape / Unescape',
+    shortDescription: 'Escape and unescape special characters, quotes, and backslashes in JSON strings.',
+    fullDescription: 'Safely escape and unescape quotes, control characters, newlines, tabs, and backslashes for JSON payload embedding.',
+    category: 'JSON',
+    categorySlug: 'json-tools',
+    icon: 'Code',
+    keywords: ['json escape', 'unescape json', 'json string escape', 'json escape quotes'],
+    relatedSlugs: ['json-formatter', 'json-validator'],
+    nextToolSlugs: ['json-formatter'],
+    faqs: [
+      {
+        question: 'What characters are escaped?',
+        answer: 'Double quotes ("), backslashes (\\), newlines (\\n), tabs (\\t), and ASCII control characters.',
+      },
+    ],
+    sampleInput: 'Hello "Developer"\nLine 2\tTabbed text',
+  },
+  {
+    id: 'json-path-tester',
+    slug: 'json-path-tester',
+    title: 'JSONPath Tester',
+    shortDescription: 'Evaluate JSONPath queries against JSON objects safely in your browser.',
+    fullDescription: 'Execute JSONPath query expressions against complex nested JSON structures with match highlighting and path counts.',
+    category: 'JSON',
+    categorySlug: 'json-tools',
+    icon: 'Search',
+    keywords: ['jsonpath tester', 'json path evaluator', 'query json', 'jsonpath syntax'],
+    relatedSlugs: ['json-viewer', 'json-formatter'],
+    nextToolSlugs: ['json-viewer'],
+    faqs: [
+      {
+        question: 'Is eval() used for evaluating JSONPath queries?',
+        answer: 'No. Evaluation uses a safe AST token parser without dynamic code execution.',
+      },
+    ],
+    sampleInput: '{\n  "store": {\n    "book": [\n      { "title": "Book A", "price": 10 },\n      { "title": "Book B", "price": 20 }\n    ]\n  }\n}',
+  },
+  {
+    id: 'word-counter',
+    slug: 'word-counter',
+    title: 'Word Counter & Text Analytics',
+    shortDescription: 'Count words, characters, sentences, paragraphs, and reading time in real-time.',
+    fullDescription: 'Fast, client-side word counter and text analytics tool. Count words, characters with/without spaces, lines, and estimated reading/speaking time.',
+    category: 'Developer Utilities',
+    categorySlug: 'developer-utilities',
+    icon: 'FileText',
+    isPopular: true,
+    keywords: ['word counter', 'character count', 'line counter', 'text analytics', 'reading time'],
+    relatedSlugs: ['case-converter', 'remove-duplicate-lines', 'sort-lines'],
+    nextToolSlugs: ['case-converter', 'remove-duplicate-lines'],
+    faqs: [
+      {
+        question: 'Does this support international Unicode characters?',
+        answer: 'Yes, word boundary matching uses Unicode character flags for multi-language support.',
+      },
+    ],
+    sampleInput: 'DevPocket is a fast, privacy-first developer toolbox processing 100% in your browser.',
+  },
+  {
+    id: 'case-converter',
+    slug: 'case-converter',
+    title: 'Case Converter',
+    shortDescription: 'Convert text between camelCase, PascalCase, snake_case, kebab-case, and UPPERCASE.',
+    fullDescription: 'Transform text case formats instantly. Convert between camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, and Title Case.',
+    category: 'Developer Utilities',
+    categorySlug: 'developer-utilities',
+    icon: 'Type',
+    keywords: ['case converter', 'camelcase', 'snake_case', 'kebab-case', 'pascalcase', 'uppercase'],
+    relatedSlugs: ['word-counter', 'sort-lines'],
+    nextToolSlugs: ['word-counter'],
+    faqs: [
+      {
+        question: 'Which case styles are supported?',
+        answer: 'camelCase, PascalCase, snake_case, kebab-case, CONSTANT_CASE, Title Case, lowercase, and UPPERCASE.',
+      },
+    ],
+    sampleInput: 'dev pocket developer micro tools',
+  },
+  {
+    id: 'remove-duplicate-lines',
+    slug: 'remove-duplicate-lines',
+    title: 'Remove Duplicate Lines',
+    shortDescription: 'Deduplicate list items and lines preserving original line ordering.',
+    fullDescription: 'Remove duplicate lines from text streams with case-sensitivity controls and whitespace trimming options.',
+    category: 'Developer Utilities',
+    categorySlug: 'developer-utilities',
+    icon: 'ListFilter',
+    keywords: ['remove duplicate lines', 'dedupe lines', 'unique lines', 'text deduplicator'],
+    relatedSlugs: ['sort-lines', 'word-counter'],
+    nextToolSlugs: ['sort-lines'],
+    faqs: [
+      {
+        question: 'Is original line order preserved?',
+        answer: 'Yes. The first occurrence of each unique line is preserved in its original position.',
+      },
+    ],
+    sampleInput: 'apple\nbanana\napple\ncherry\nbanana',
+  },
+  {
+    id: 'sort-lines',
+    slug: 'sort-lines',
+    title: 'Sort Lines',
+    shortDescription: 'Sort text lines alphabetically, numerically, in reverse, or by length.',
+    fullDescription: 'Sort multiline text lists alphabetically (A-Z or Z-A), numerically, or by line length with case-sensitivity controls.',
+    category: 'Developer Utilities',
+    categorySlug: 'developer-utilities',
+    icon: 'ArrowDownAZ',
+    keywords: ['sort lines', 'alphabetical sort', 'numeric sort', 'sort text list'],
+    relatedSlugs: ['remove-duplicate-lines', 'word-counter'],
+    nextToolSlugs: ['remove-duplicate-lines'],
+    faqs: [
+      {
+        question: 'Does numerical sort handle floating point numbers?',
+        answer: 'Yes, numerical mode extracts numbers from lines for proper magnitude ordering.',
+      },
+    ],
+    sampleInput: 'cherry\napple\nbanana\n100\n20\n5',
+  },
+  {
+    id: 'text-diff',
+    slug: 'text-diff',
+    title: 'Text Diff',
+    shortDescription: 'Compare two text blocks line-by-line and highlight additions and deletions.',
+    fullDescription: 'Line-by-line text comparison tool. Highlight added, removed, and unchanged lines with Web Worker safety guards.',
+    category: 'Developer Utilities',
+    categorySlug: 'developer-utilities',
+    icon: 'FileDiff',
+    keywords: ['text diff', 'compare text', 'line diff', 'text comparator'],
+    relatedSlugs: ['json-diff', 'word-counter'],
+    nextToolSlugs: ['json-diff'],
+    faqs: [
+      {
+        question: 'Is my text processed locally?',
+        answer: 'Yes, text comparison is computed 100% inside your browser.',
+      },
+    ],
+    sampleInput: 'Line 1\nLine 2\nLine 3',
+  },
 ];
 
 export function getToolBySlug(slug: string): ToolMetadata | undefined {
   return TOOLS_LIST.find((t) => t.slug === slug);
+}
+
+export function getToolsByCategorySlug(categorySlug: string): ToolMetadata[] {
+  if (categorySlug === 'json-tools') {
+    return TOOLS_LIST.filter((t) => t.category === 'JSON');
+  }
+  if (categorySlug === 'encoding-tools') {
+    return TOOLS_LIST.filter((t) => t.category === 'Encoding');
+  }
+  if (categorySlug === 'developer-utilities') {
+    return TOOLS_LIST.filter(
+      (t) =>
+        t.category === 'Developer Utilities' ||
+        t.category === 'Identifiers & Time' ||
+        t.category === 'Security & Web'
+    );
+  }
+  return TOOLS_LIST;
+}
+
+export interface CategoryInfo {
+  slug: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  icon: string;
+}
+
+export const CATEGORIES_MAP: Record<string, CategoryInfo> = {
+  'json-tools': {
+    slug: 'json-tools',
+    title: 'JSON Tools & Utilities',
+    subtitle: 'Format, validate, minify, inspect, and convert JSON data directly in your browser.',
+    description: 'A comprehensive suite of 100% client-side JSON developer tools. Beautify payloads, diagnose syntax errors, convert between YAML and CSV formats, and inspect complex data hierarchies.',
+    icon: 'FileCode',
+  },
+  'encoding-tools': {
+    slug: 'encoding-tools',
+    title: 'Encoding & Decoding Tools',
+    subtitle: 'Encode and decode Base64, URL percent strings, and HTML entities securely.',
+    description: 'Client-side developer utilities for standard string encodings. Convert UTF-8 text to Base64, percent-encode query parameters, and escape HTML characters to prevent XSS.',
+    icon: 'Binary',
+  },
+  'developer-utilities': {
+    slug: 'developer-utilities',
+    title: 'Core Developer Utilities',
+    subtitle: 'UUID generation, Unix timestamp conversion, JWT inspection, cryptographic hashes, cron expressions, and regex testing.',
+    description: 'Essential micro-tools for software engineering workflows. Decode JWT claims, generate cryptographically secure UUIDs, parse Unix epoch timestamps, and test regular expressions safely.',
+    icon: 'Wrench',
+  },
+};
+
+export function getCategoryInfo(categorySlug: string): CategoryInfo | undefined {
+  return CATEGORIES_MAP[categorySlug];
 }

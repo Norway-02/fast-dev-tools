@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ChevronDown, Menu, X, ChevronRight } from 'lucide-react';
+import { Search, Menu, X, ChevronRight } from 'lucide-react';
 import { TOOLS_LIST } from '@/lib/constants/tools-list';
 import { CommandPalette } from './CommandPalette';
 
@@ -52,7 +52,7 @@ export function Header() {
             </div>
             <div className="flex items-center gap-2">
               <span className="font-mono font-bold text-base tracking-tight text-slate-100 group-hover:text-[#34D399] transition-colors">
-                FastDevTools
+                DevPocket
               </span>
               <span className="text-[10px] uppercase font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-[#34D399] border border-emerald-500/20 hidden sm:inline-block">
                 100% client-side
@@ -62,38 +62,28 @@ export function Header() {
 
           {/* Desktop & Tablet Navigation (>= 768px) */}
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300 font-mono">
-            <Link href="/" className="flex items-center gap-1.5 hover:text-[#34D399] transition-colors py-2">
+            <Link href="/dev-tools" className="flex items-center gap-1.5 hover:text-[#34D399] transition-colors py-2">
               <span>Tools</span>
               <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#111927] text-[#34D399] border border-[#1E293B]">
                 21
               </span>
             </Link>
 
-            <div className="relative group">
-              <button className="flex items-center gap-1 hover:text-[#34D399] transition-colors py-2">
-                <span>Categories</span>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#34D399] transition-transform group-hover:rotate-180" />
-              </button>
+            <Link href="/json-tools" className="hover:text-[#34D399] transition-colors py-2">
+              JSON Tools
+            </Link>
 
-              <div className="absolute top-full left-0 hidden group-hover:block w-64 bg-[#0C111B] border border-[#1E293B] rounded-xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                {categories.map((cat) => (
-                  <div key={cat} className="mb-2 last:mb-0">
-                    <div className="text-[10px] font-mono uppercase tracking-wider text-slate-500 px-3 py-1 font-semibold">
-                      {cat}
-                    </div>
-                    {TOOLS_LIST.filter((t) => t.category === cat).map((tool) => (
-                      <Link
-                        key={tool.slug}
-                        href={`/${tool.slug}`}
-                        className="block px-3 py-1.5 text-xs text-slate-300 hover:text-white hover:bg-[#111927] rounded-lg transition-colors"
-                      >
-                        {tool.title}
-                      </Link>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
+            <Link href="/encoding-tools" className="hover:text-[#38BDF8] transition-colors py-2">
+              Encoding
+            </Link>
+
+            <Link href="/developer-utilities" className="hover:text-purple-400 transition-colors py-2">
+              Utilities
+            </Link>
+
+            <Link href="/guides" className="hover:text-[#34D399] transition-colors py-2">
+              Guides
+            </Link>
           </nav>
 
           {/* Right Action Bar: Search + Mobile Drawer Toggle */}
@@ -135,7 +125,7 @@ export function Header() {
             <div className="space-y-6">
               <div className="flex items-center justify-between border-b border-[#1E293B] pb-4">
                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2 font-mono font-bold text-base text-slate-100">
-                  <span className="text-[#34D399]">&gt;_</span> FastDevTools
+                  <span className="text-[#34D399]">&gt;_</span> DevPocket
                 </Link>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}

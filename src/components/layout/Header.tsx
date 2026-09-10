@@ -54,8 +54,8 @@ export function Header() {
               <span className="font-mono font-bold text-base tracking-tight text-slate-100 group-hover:text-[#34D399] transition-colors">
                 DevPocket
               </span>
-              <span className="text-[10px] uppercase font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-[#34D399] border border-emerald-500/20 hidden sm:inline-block">
-                100% client-side
+              <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-[#34D399] border border-emerald-500/20">
+                v2.1
               </span>
             </div>
           </Link>

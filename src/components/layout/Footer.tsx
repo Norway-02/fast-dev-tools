@@ -11,6 +11,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2 text-slate-100 font-mono font-bold text-sm">
               <span className="text-[#34D399] font-extrabold">&gt;_</span>
               <span>DevPocket</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-[#34D399] border border-emerald-500/20">v2.1</span>
             </Link>
             <p className="text-slate-400 text-xs max-w-md font-sans">
               Fast developer micro-tools. No installation. No signup.

@@ -26,6 +26,13 @@ describe('JSONPath Evaluation Engine', () => {
     expect(res.matches[0].value).toBe('Alice');
   });
 
+  it('evaluates bracket notation ($[\'store\'][\'owner\'])', () => {
+    const res = evaluateJsonPath(sampleJson, "$['store']['owner']");
+    expect(res.isValid).toBe(true);
+    expect(res.matchCount).toBe(1);
+    expect(res.matches[0].value).toBe('Alice');
+  });
+
   it('evaluates array indexing ($.store.book[0].title)', () => {
     const res = evaluateJsonPath(sampleJson, '$.store.book[0].title');
     expect(res.isValid).toBe(true);
@@ -39,6 +46,18 @@ describe('JSONPath Evaluation Engine', () => {
     expect(res.matchCount).toBe(2);
     expect(res.matches[0].value).toBe('Book A');
     expect(res.matches[1].value).toBe('Book B');
+  });
+
+  it('handles missing properties gracefully without crashing', () => {
+    const res = evaluateJsonPath(sampleJson, '$.store.nonexistent');
+    expect(res.isValid).toBe(true);
+    expect(res.matchCount).toBe(0);
+  });
+
+  it('safely disables complex filter scripts [?(@...)]', () => {
+    const res = evaluateJsonPath(sampleJson, '$.store.book[?(@.price > 10)]');
+    expect(res.isValid).toBe(false);
+    expect(res.error).toContain('disabled for browser security');
   });
 
   it('returns clean error for invalid JSON or expression without $', () => {

@@ -36,6 +36,15 @@ export function evaluateJsonPath(jsonStr: string, expression: string): JsonPathR
     };
   }
 
+  if (expr.includes('?(') || expr.includes('..')) {
+    return {
+      isValid: false,
+      error: 'Complex filter scripts [?(@...)] and recursive descent (..) are disabled for browser security in DevPocket.',
+      matches: [],
+      matchCount: 0,
+    };
+  }
+
   const matches: JsonPathMatch[] = [];
 
   try {

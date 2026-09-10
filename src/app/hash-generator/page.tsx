@@ -26,6 +26,15 @@ export default function HashGeneratorPage() {
 
     const processHashes = async () => {
       if (file) {
+        const MAX_FILE_SIZE_BYTES = 500 * 1024 * 1024; // 500 MB
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+          if (active) {
+            setError(`File (${Math.round(file.size / (1024 * 1024))} MB) exceeds the 500 MB browser memory limit. Web Crypto API requires full ArrayBuffer in-memory loading, which may freeze the tab.`);
+            setHashes(null);
+          }
+          return;
+        }
+
         try {
           const buffer = await file.arrayBuffer();
           const sha256Buf = await crypto.subtle.digest('SHA-256', buffer);
@@ -116,8 +125,8 @@ export default function HashGeneratorPage() {
             <p className="text-xs font-mono text-slate-200">
               Drag & Drop a local file here to compute cryptographic checksums
             </p>
-            <p className="text-[11px] text-slate-500 font-sans">
-              100% In-Browser Execution. File data is processed in memory and never uploaded.
+            <p className="text-[11px] text-slate-400 font-sans">
+              100% In-Browser Execution (`crypto.subtle.digest`). Max 500 MB in-browser memory buffer limit. File data is never uploaded.
             </p>
           </div>
 

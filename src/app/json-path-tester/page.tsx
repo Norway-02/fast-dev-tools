@@ -33,9 +33,14 @@ export default function JsonPathTesterPage() {
       ]}
     >
       <div className="space-y-4">
-        {/* JSONPath Expression Input */}
-        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-2 font-mono text-xs">
-          <label className="block text-slate-200 font-bold">JSONPath Expression:</label>
+        {/* JSONPath Expression Input & Scope Notice */}
+        <div className="p-4 bg-slate-900 border border-slate-800 rounded-xl space-y-3 font-mono text-xs">
+          <div className="flex items-center justify-between">
+            <label className="block text-slate-200 font-bold">JSONPath Expression:</label>
+            <span className="text-[11px] text-[#34D399] bg-emerald-950/60 border border-emerald-800/60 px-2.5 py-0.5 rounded-md font-sans">
+              Safe Fast Standard Subset (Non-Eval)
+            </span>
+          </div>
           <input
             type="text"
             value={expression}
@@ -43,6 +48,9 @@ export default function JsonPathTesterPage() {
             placeholder="$.store.book[*].title"
             className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-[#34D399]"
           />
+          <div className="p-2.5 bg-slate-950 rounded-lg border border-slate-800/80 text-[11px] text-slate-400 font-sans leading-relaxed">
+            <strong className="text-slate-300">Supported Syntax:</strong> Root (<code className="text-emerald-400">$</code>), dot property access (<code className="text-emerald-400">.prop</code>), bracket property access (<code className="text-emerald-400">[&apos;prop&apos;]</code>), array index access (<code className="text-emerald-400">[0]</code>), and wildcards (<code className="text-emerald-400">.*</code>, <code className="text-emerald-400">[*]</code>). Complex filter scripts (<code className="text-amber-400">[?(@...)]</code>) are disabled for browser security.
+          </div>
         </div>
 
         {/* Editors Grid */}
